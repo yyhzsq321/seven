@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<title>Seven</title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<script src="js/jquery-2.2.1.min.js"></script>
+		<script type="text/javascript">
+			var url = 'http://seven.520lyx.cn/';
+			//var url = 'http://192.168.0.106:8080/seven/';
+			document.addEventListener('plusready', getMyScore);
+
+			function getMyScore() {
+				var currentScore = document.getElementById("current_score");
+				$.post(url + 'getMyScore', {}, function(rs) {
+					var rs = JSON.parse(rs);
+					currentScore.innerText = rs.data;
+				});
+			}
+		</script>
+		<style type="text/css">
+			.mui-input-group {
+				margin-top: 10px;
+			}
+			
+			.mui-input-group:first-child {
+				margin-top: 20px;
+			}
+			
+			.mui-content-padded {
+				margin-top: 25px;
+			}
+			
+			.mui-input-row label {
+				width: 35%;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" style="padding-right: 15px;">
+			<a id="more" class="mui-icon mui-icon-more mui-pull-right" style="color: #999;"></a>
+			<h1 class="mui-title">Score</h1>
+		</header>
+		<div class="mui-content">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell mui-media">
+					<div class="mui-input-row">
+						<label style="width:35%;"><strong>当前分数</strong></label>
+						<label id="current_score" style="width:65%;text-align: center;">0</label>
+					</div>
+				</li>
+			</ul>
+
+			<div class="mui-input-group">
+				<div class="mui-input-row" style="height: 50px;">
+					<label style="margin-top: 5px;"><strong>今日加分</strong></label>
+					<div style="float: none;width: 55%;height: 46px;" class="mui-numbox" data-numbox-step='100' data-numbox-min='300'>
+						<button class="mui-btn mui-numbox-btn-minus" type="button">-</button>
+						<input class="mui-numbox-input" id="score" type="number" />
+						<button class="mui-btn mui-numbox-btn-plus" type="button">+</button>
+					</div>
+				</div>
+			</div>
+			<div class="mui-input-group">
+				<div class="mui-input-row" style="margin: 10px 0;height: auto;">
+					<textarea name="reason" id="reason" rows="5" placeholder="加分理由"></textarea>
+				</div>
+			</div>
+			<div class="mui-content-padded">
+				<button class="mui-btn mui-btn-block mui-btn-primary" onclick="addScore();">确定</button>
+			</div>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript">
+			function addScore() {
+				var score = document.getElementById("score").value;
+				var reason = document.getElementById("reason").value;
+				var title = '';
+				if(score >= 5000)
+					title = '确定要加这么多分吗？';
+				else if(score >= 1000)
+					title = '确定只加这么点分吗？';
+				else if(score >= 500)
+					title = '确定只加这么多？合适吗？';
+				else
+					title = '确定只加这么一点？有点过分吧！';
+				plus.nativeUI.confirm(title, function(e) {
+					if(e.index === 0) {
+						plus.nativeUI.showWaiting("等待中...");
+						$.post(url + 'addScore', {
+							score: score,
+							reason: reason,
+							writer:1
+						}, function(data) {
+							plus.nativeUI.closeWaiting();
+							if(data.status === 'success') {
+								getMyScore();
+								plus.nativeUI.toast('恭喜，添加成功！');
+							} else if(data.error === 'repeatRecord') {
+								plus.nativeUI.alert("您今天已经添加过分数了!", function() {}, "Seven", "OK");
+							} else {
+								plus.nativeUI.toast('出现了未知的错误');
+							}
+						});
+					} else {
+						plus.nativeUI.toast('再加点分吧！');
+					}
+				}, "Seven", ["确定", "取消"]);
+
+			}
+
+			document.getElementById('more').addEventListener('tap', function() {
+				mui.openWindow({
+					url: "more.html",
+					id: "more",
+					show: {
+						aniShow: 'zoom-fade-out',
+						duration: 300
+					}
+				});
+				return;
+			});
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>详情</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<link rel="stylesheet" href="css/mui.min.css">
+		<script src="js/mui.min.js"></script>
+		<script src="js/jquery-2.2.1.min.js"></script>
+		<script type="text/javascript">
+			var url = 'http://seven.520lyx.cn/';
+			//var url = 'http://192.168.0.106:8080/seven/';
+			document.addEventListener('plusready', getDetail);
+
+			function getDetail() {
+				var self = plus.webview.currentWebview();
+				var score_num = document.getElementById("score_num");
+				var score_writer = document.getElementById("score_writer");
+				var score_date = document.getElementById("score_date");
+				var score_reason = document.getElementById("score_reason");
+				var id = self.scoreId;
+				$.post(url + 'getDetail', {
+					id: id
+				}, function(rs) {
+					var rs = JSON.parse(rs);
+					var score = JSON.parse(rs.data);
+					score_num.innerText = score.score;
+					if(score.addWriter == 1)
+						score_writer.innerText = 'Seven';
+					else if(score.addWriter == 2)
+						score_writer.innerText = 'iHelin';
+					else
+						score_writer.innerText = '未知';
+					var date = new Date(score.addDate);
+					var dataStr = date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate();
+					dataStr += ' ' + date.getHours() + ':' + date.getMinutes();
+					score_date.innerText = dataStr;
+					score_reason.innerText = score.reason;
+				});
+			}
+		</script>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a id="back" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 id="title" class="mui-title">详情</h1>
+		</header>
+		<div class="mui-content">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell"><strong>分数</strong><span class="mui-pull-right" id="score_num"></span></li>
+				<li class="mui-table-view-cell"><strong>加分人</strong><span class="mui-pull-right" id="score_writer"></span></li>
+				<li class="mui-table-view-cell"><strong>加分时间</strong><span class="mui-pull-right" id="score_date"></span></li>
+				<li class="mui-table-view-cell mui-collapse mui-active">
+					<a class="mui-navigate-right" href="#"><strong>理由</strong></a>
+					<div class="mui-collapse-content">
+						<p id="score_reason"></p>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</body>
+
+</html>
