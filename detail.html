@@ -11,9 +11,8 @@
 		<link rel="stylesheet" href="css/mui.min.css">
 		<script src="js/mui.min.js"></script>
 		<script src="js/jquery-2.2.1.min.js"></script>
+		<script src="api.js"></script>
 		<script type="text/javascript">
-			var url = 'http://seven.520lyx.cn/';
-			//var url = 'http://192.168.0.106:8080/seven/';
 			document.addEventListener('plusready', getDetail);
 
 			function getDetail() {
@@ -23,11 +22,8 @@
 				var score_date = document.getElementById("score_date");
 				var score_reason = document.getElementById("score_reason");
 				var id = self.scoreId;
-				$.post(url + 'getDetail', {
-					id: id
-				}, function(rs) {
-					var rs = JSON.parse(rs);
-					var score = JSON.parse(rs.data);
+				$.get(requestPrefix + 'score/' + id, {}, function(rs) {
+					var score = rs.data;
 					score_num.innerText = score.score;
 					if(score.addWriter == 1)
 						score_writer.innerText = 'Seven';

@@ -7,16 +7,14 @@
 		<title>Seven</title>
 		<link href="css/mui.min.css" rel="stylesheet" />
 		<script src="js/jquery-2.2.1.min.js"></script>
+		<script src="api.js"></script>
 		<script type="text/javascript">
-			var url = 'http://seven.520lyx.cn/';
-			//var url = 'http://192.168.0.106:8080/seven/';
 			document.addEventListener('plusready', getMyScore);
 
 			function getMyScore() {
 				var currentScore = document.getElementById("current_score");
-				$.post(url + 'getMyScore', {}, function(rs) {
-					var rs = JSON.parse(rs);
-					currentScore.innerText = rs.data;
+				$.get(requestPrefix + 'score/all', {}, function(res) {
+					currentScore.innerText = res.data;
 				});
 			}
 		</script>
@@ -90,15 +88,16 @@
 				plus.nativeUI.confirm(title, function(e) {
 					if(e.index === 0) {
 						plus.nativeUI.showWaiting("等待中...");
-						$.post(url + 'addScore', {
+						$.post(requestPrefix + 'score', {
 							score: score,
 							reason: reason,
-							writer:1
-						}, function(data) {
+							writer: 1
+						}, function(res) {
 							plus.nativeUI.closeWaiting();
-							if(data.status === 'success') {
+							if(res.status === 'success') {
 								getMyScore();
 								plus.nativeUI.toast('恭喜，添加成功！');
+								document.getElementById("reason").value = '';
 							} else if(data.error === 'repeatRecord') {
 								plus.nativeUI.alert("您今天已经添加过分数了!", function() {}, "Seven", "OK");
 							} else {

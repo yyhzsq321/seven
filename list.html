@@ -23,6 +23,7 @@
 		</div>
 		<script src="js/mui.min.js"></script>
 		<script src="js/jquery-2.2.1.min.js"></script>
+		<script src="api.js"></script>
 		<script>
 			mui.init({
 				pullRefresh: {
@@ -52,9 +53,6 @@
 			/**
 			 * 上拉加载具体业务实现
 			 */
-			var url = 'http://seven.520lyx.cn/';
-			//var url = 'http://192.168.0.106:8080/seven/';
-
 			function pullupRefresh() {
 				var str = '';
 				mui('#pullrefresh').pullRefresh().endPullupToRefresh((++count > 1)); //参数为true代表没有更多数据了。
@@ -63,44 +61,42 @@
 				var offset = cells.length;
 				offset = offset / 10;
 				offset++;
-				$.post(url + 'getScoreHistory', {
+				$.get(requestPrefix + 'scores', {
 					pageNum: offset
-				}, function(rs) {
-					var data = JSON.parse(rs);
-					var score = JSON.parse(data.data);
-					if(score.length > 0) {
+				}, function(res) {
+					var scores = res.data
+					if(scores.length > 0) {
 						count = 0;
 					}
-					for(var i = 0; i < score.length; i++) {
+					for(var i = 0; i < scores.length; i++) {
 						var li = document.createElement('li');
 						li.className = 'mui-table-view-cell';
-						li.setAttribute('scoreId', score[i].id);
+						li.setAttribute('scoreId', scores[i].id);
 						str = '<div class="mui-table"><div class="mui-table-cell mui-col-xs-10">';
 						str += '<h4 class="mui-ellipsis">';
-						str += score[i].score;
+						str += scores[i].score;
 						str += '</h4><h5>加分人：';
-						if(score[i].addWriter == 1)
+						if(scores[i].addWriter == 1)
 							str += 'Seven';
-						else if(score[i].addWriter == 2)
+						else if(scores[i].addWriter == 2)
 							str += 'iHelin';
 						else
 							str += '未知';
 						str += '</h5><p class="mui-h6 mui-ellipsis">';
 						str += '理由：';
-						if(score[i].reason == null || score[i].reason == "") {
+						if(scores[i].reason == null || scores[i].reason == "") {
 							str += '未填写';
 						} else {
-							str += score[i].reason;
+							str += scores[i].reason;
 						}
 						str += '</p></div><div class="mui-table-cell mui-col-xs-2 mui-text-right"><span class="mui-h5">';
-						var date = new Date(score[i].addDate);
+						var date = new Date(scores[i].addDate);
 						str += date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate();
 						str += '</span></div></div>';
 						li.innerHTML = str;
 						table.appendChild(li);
 					}
 				});
-
 			}
 			if(mui.os.plus) {
 				mui.plusReady(function() {
