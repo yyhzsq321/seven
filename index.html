@@ -28,7 +28,7 @@
 							this.aScore += 100;
 						},
 						reduceAScore() {
-							if(this.aScore - 100 > 300) {
+							if(this.aScore - 100 >= 300) {
 								this.aScore -= 100;
 							} else {
 								plus.nativeUI.toast('不能再少了！！！');
