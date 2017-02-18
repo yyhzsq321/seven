@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html>
+
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 		<title>历史记录</title>
 		<link href="css/mui.min.css" rel="stylesheet" />
-    	<script src="js/jquery-2.2.1.min.js"></script>
 	</head>
+
 	<body>
 		<header class="mui-bar mui-bar-nav">
 			<a id="back" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
@@ -15,28 +16,29 @@
 		<div class="mui-content"></div>
 		<script src="js/mui.min.js"></script>
 		<script type="text/javascript">
-		//启用双击监听
-		mui.init({
-			gestureConfig:{
-				doubletap:true
-			},
-			subpages:[{
-				url:'list.html',
-				id:'list.html',
-				styles:{
-					top: '45px',
-					bottom: '0px',
+			//启用双击监听
+			mui.init({
+				gestureConfig: {
+					doubletap: true
+				},
+				subpages: [{
+					url: 'list.html',
+					id: 'list.html',
+					styles: {
+						top: '45px',
+						bottom: '0px',
+					}
+				}]
+			});
+
+			var contentWebview = null;
+			document.querySelector('header').addEventListener('doubletap', function() {
+				if(contentWebview == null) {
+					contentWebview = plus.webview.currentWebview().children()[0];
 				}
-			}]
-		});
-	
-		var contentWebview = null;
-		document.querySelector('header').addEventListener('doubletap',function () {
-			if(contentWebview==null){
-				contentWebview = plus.webview.currentWebview().children()[0];
-			}
-			contentWebview.evalJS("mui('#pullrefresh').pullRefresh().scrollTo(0,0,100)");
-		});
-	</script>
+				contentWebview.evalJS("mui('#pullrefresh').pullRefresh().scrollTo(0,0,100)");
+			});
+		</script>
 	</body>
+
 </html>
