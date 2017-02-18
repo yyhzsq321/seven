@@ -85,8 +85,12 @@
 								this.pageNum++;
 								res.data.data.forEach(score => {
 									this.scores.push(score);
-								})
-								mui('#pullrefresh').pullRefresh().endPullupToRefresh();
+								});
+								let disable = false;
+								if(res.data.data.length < 10){
+									disable = true;
+								}
+								mui('#pullrefresh').pullRefresh().endPullupToRefresh(disable);
 							});
 						}
 					},
