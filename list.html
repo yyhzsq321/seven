@@ -63,13 +63,13 @@
 							});
 						},
 						pullDownRefresh() {
-							let pageLength = this.scores.length == 0 ? 10 : this.scores.length;
+							var pageLength = this.scores.length == 0 ? 10 : this.scores.length;
 							this.$http.get(requestPrefix + 'scores', {
 								params: {
 									pageNum: 1,
 									pageLength: pageLength
 								}
-							}).then(res => {
+							}).then(function(res) {
 								this.pageNum++;
 								this.scores = res.data.data;
 								mui('#pullrefresh').pullRefresh().endPulldownToRefresh();
@@ -81,13 +81,13 @@
 									pageNum: this.pageNum,
 									pageLength: 10
 								}
-							}).then(res => {
+							}).then(function(res) {
 								this.pageNum++;
-								res.data.data.forEach(score => {
+								res.data.data.forEach(function(score) {
 									this.scores.push(score);
 								});
-								let disable = false;
-								if(res.data.data.length < 10){
+								var disable = false;
+								if(res.data.data.length < 10) {
 									disable = true;
 								}
 								mui('#pullrefresh').pullRefresh().endPullupToRefresh(disable);
@@ -121,7 +121,7 @@
 							return dataStr;
 						},
 						addPerson(id) {
-							let str;
+							var str;
 							if(id == 1)
 								str = 'Seven';
 							else if(id == 2)

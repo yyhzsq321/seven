@@ -9,11 +9,12 @@
 		<script src="js/vue.min.js"></script>
 		<script src="js/vue-resource.js"></script>
 		<script src="api.js"></script>
+		
 		<script>
 			document.addEventListener('plusready', init);
 
 			function init() {
-				let app = new Vue({
+				var app = new Vue({
 					el: '#app',
 					data: {
 						score: 0,
@@ -35,23 +36,23 @@
 							}
 						},
 						getTotal() {
-							this.$http.get(requestPrefix + 'score/all').then(res => {
+							this.$http.get(requestPrefix + 'score/all').then(function(res) {
 								this.score = res.data.data;
 							});
 						},
 						addScore() {
-							let vm = this;
-							let title = '确定要加 ' + this.aScore + ' 分吗？';
+							var vm = this;
+							var title = '确定要加 ' + this.aScore + ' 分吗？';
 							plus.nativeUI.confirm(title, function(e) {
 								if(e.index === 0) {
 									plus.nativeUI.showWaiting("等待中...");
-									Vue.http.post(requestPrefix + 'score', {}, {
-										params: {
-											score: vm.aScore,
-											reason: vm.reason,
-											writer: 1
-										}
-									}).then(res => {
+									Vue.http.post(requestPrefix + 'score', {
+										score: vm.aScore,
+										reason: vm.reason,
+										addWriter: 1
+									},{
+//										timeout:10
+									}).then(function(res) {
 										plus.nativeUI.closeWaiting();
 										if(res.data.status == 'success') {
 											vm.getTotal();
@@ -60,6 +61,12 @@
 										} else {
 											plus.nativeUI.toast('出现了未知的错误！');
 										}
+									},function(error){
+										plus.nativeUI.closeWaiting();
+										console.log('1'+JSON.stringify(error));
+									}).catch(function(error){
+										plus.nativeUI.closeWaiting();
+										console.log('2'+JSON.stringify(error));
 									});
 								} else {
 									plus.nativeUI.toast('再加点分吧！');

@@ -7,7 +7,7 @@ var context = "";
 //var protocol = "http";
 //var hostname = "192.168.31.252";
 //var port = 8080;
-//var context = "";
+//var context = "/iHelin";
 
 
 var requestPrefix = '';
